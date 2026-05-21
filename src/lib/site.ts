@@ -1,5 +1,6 @@
 export const APP_URL = "https://app.tokenvue.in";
 export const DOCS_URL = "https://docs.tokenvue.in";
+export const GOOGLE_ANALYTICS_ID = "G-MF22XS2ZGF";
 export const SITE_NAME = "TokenVue";
 export const SITE_URL = "https://tokenvue.in";
 export const SITE_TITLE = `${SITE_NAME} - AI Gateway for Production LLM Apps`;

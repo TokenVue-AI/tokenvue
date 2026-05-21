@@ -10,6 +10,7 @@ import {
 
 import appCss from "../styles.css?url";
 import {
+  GOOGLE_ANALYTICS_ID,
   OG_IMAGE_URL,
   SITE_DESCRIPTION,
   SITE_KEYWORDS,
@@ -152,6 +153,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+    ],
+    scripts: [
+      {
+        async: true,
+        src: `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`,
+      },
+      {
+        children: `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GOOGLE_ANALYTICS_ID}');
+`,
       },
     ],
   }),
