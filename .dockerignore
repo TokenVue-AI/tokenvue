@@ -1,0 +1,11 @@
+.git
+.tanstack
+dist
+node_modules
+
+*.log
+.codex-*.log
+
+.env
+.env.*
+!.env.example

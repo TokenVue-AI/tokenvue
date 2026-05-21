@@ -1,0 +1,17 @@
+{
+  "name": "TokenVue",
+  "short_name": "TokenVue",
+  "description": "AI gateway for production LLM apps with routing, guardrails, analytics, budgets, failover, and cost control.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#05070d",
+  "theme_color": "#05070d",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
