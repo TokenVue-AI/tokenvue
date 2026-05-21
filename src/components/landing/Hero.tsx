@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Activity, Zap, Shield } from "lucide-react";
-import { APP_URL, SITE_NAME } from "@/lib/site";
+import { APP_URL, CONTACT_MAILTO, SITE_NAME } from "@/lib/site";
 
 const PRODUCT_HUNT_BADGE_URL =
   "https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1152336&theme=light&t=1779352510782";
@@ -84,7 +84,7 @@ export function Hero() {
             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
           </a>
           <a
-            href="#"
+            href={CONTACT_MAILTO}
             className="inline-flex items-center gap-2 rounded-xl glass px-5 py-3 text-sm font-medium hover:border-primary/40 transition"
           >
             Book a demo

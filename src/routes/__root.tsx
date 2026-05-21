@@ -10,6 +10,7 @@ import {
 
 import appCss from "../styles.css?url";
 import {
+  CONTACT_EMAIL,
   GOOGLE_ANALYTICS_ID,
   OG_IMAGE_URL,
   SITE_DESCRIPTION,
@@ -124,6 +125,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: SITE_NAME,
           url: SITE_URL,
           logo: OG_IMAGE_URL,
+          email: CONTACT_EMAIL,
+          contactPoint: [
+            {
+              "@type": "ContactPoint",
+              contactType: "sales",
+              email: CONTACT_EMAIL,
+            },
+          ],
         },
       },
       {
