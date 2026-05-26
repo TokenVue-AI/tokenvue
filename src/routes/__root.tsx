@@ -224,7 +224,6 @@ function TawkToChat() {
     script.async = true;
     script.src = TAWK_TO_SCRIPT_SRC;
     script.charset = "UTF-8";
-    script.setAttribute("crossorigin", "*");
     document.body.appendChild(script);
   }, []);
 
