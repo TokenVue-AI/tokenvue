@@ -1,3 +1,4 @@
+import { useEffect, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -19,6 +20,15 @@ import {
   SITE_TITLE,
   SITE_URL,
 } from "@/lib/site";
+
+const TAWK_TO_SCRIPT_ID = "tawk-to-widget";
+const TAWK_TO_SCRIPT_SRC = "https://embed.tawk.to/6a15a50c36ad8d1c38c41610/1jpi8pf3n";
+
+type TawkWindow = Window &
+  typeof globalThis & {
+    Tawk_API?: Record<string, unknown>;
+    Tawk_LoadStart?: Date;
+  };
 
 function NotFoundComponent() {
   return (
@@ -177,19 +187,6 @@ gtag('js', new Date());
 gtag('config', '${GOOGLE_ANALYTICS_ID}');
 `,
       },
-      {
-        children: `
-var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-(function(){
-var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-s1.async = true;
-s1.src = 'https://embed.tawk.to/6a15a50c36ad8d1c38c41610/1jpi8pf3n';
-s1.charset = 'UTF-8';
-s1.setAttribute('crossorigin', '*');
-s0.parentNode.insertBefore(s1, s0);
-})();
-`,
-      },
     ],
   }),
   shellComponent: RootShell,
@@ -198,7 +195,7 @@ s0.parentNode.insertBefore(s1, s0);
   errorComponent: ErrorComponent,
 });
 
-function RootShell({ children }: { children: React.ReactNode }) {
+function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -212,12 +209,35 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function TawkToChat() {
+  useEffect(() => {
+    if (document.getElementById(TAWK_TO_SCRIPT_ID)) {
+      return;
+    }
+
+    const tawkWindow = window as TawkWindow;
+    tawkWindow.Tawk_API = tawkWindow.Tawk_API || {};
+    tawkWindow.Tawk_LoadStart = new Date();
+
+    const script = document.createElement("script");
+    script.id = TAWK_TO_SCRIPT_ID;
+    script.async = true;
+    script.src = TAWK_TO_SCRIPT_SRC;
+    script.charset = "UTF-8";
+    script.setAttribute("crossorigin", "*");
+    document.body.appendChild(script);
+  }, []);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <TawkToChat />
     </QueryClientProvider>
   );
 }
