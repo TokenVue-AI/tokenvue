@@ -177,6 +177,19 @@ gtag('js', new Date());
 gtag('config', '${GOOGLE_ANALYTICS_ID}');
 `,
       },
+      {
+        children: `
+var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+(function(){
+var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+s1.async = true;
+s1.src = 'https://embed.tawk.to/6a15a50c36ad8d1c38c41610/1jpi8pf3n';
+s1.charset = 'UTF-8';
+s1.setAttribute('crossorigin', '*');
+s0.parentNode.insertBefore(s1, s0);
+})();
+`,
+      },
     ],
   }),
   shellComponent: RootShell,
