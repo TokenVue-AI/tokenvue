@@ -7,12 +7,15 @@ type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
 
+const CANONICAL_HOSTNAME = "tokenvue.in";
+const WWW_HOSTNAME = `www.${CANONICAL_HOSTNAME}`;
+
 let serverEntryPromise: Promise<ServerEntry> | undefined;
 
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
     serverEntryPromise = import("@tanstack/react-start/server-entry").then(
-      (m) => ((m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry)),
+      (m) => (m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry),
     );
   }
   return serverEntryPromise;
@@ -66,9 +69,28 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   return brandedErrorResponse();
 }
 
+function canonicalHostRedirect(request: Request): Response | undefined {
+  const url = new URL(request.url);
+
+  if (url.hostname.toLowerCase() !== WWW_HOSTNAME) {
+    return undefined;
+  }
+
+  url.protocol = "https:";
+  url.hostname = CANONICAL_HOSTNAME;
+  url.port = "";
+
+  return Response.redirect(url.toString(), 301);
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const redirectResponse = canonicalHostRedirect(request);
+      if (redirectResponse) {
+        return redirectResponse;
+      }
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

@@ -11,6 +11,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientDir = path.resolve(__dirname, "dist/client");
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "0.0.0.0";
+const canonicalHostname = "tokenvue.in";
+const wwwHostname = `www.${canonicalHostname}`;
 
 const contentTypes = new Map([
   [".css", "text/css; charset=utf-8"],
@@ -37,6 +39,28 @@ function safeStaticPath(pathname) {
 
   const filePath = path.resolve(clientDir, `.${decodedPath}`);
   return filePath.startsWith(`${clientDir}${path.sep}`) ? filePath : undefined;
+}
+
+function redirectCanonicalHost(request, response) {
+  const hostHeader = request.headers.host ?? "";
+  const hostname = hostHeader.split(":")[0]?.toLowerCase();
+
+  if (hostname !== wwwHostname) {
+    return false;
+  }
+
+  const protocolHeader = request.headers["x-forwarded-proto"];
+  const protocol = Array.isArray(protocolHeader) ? protocolHeader[0] : protocolHeader;
+  const url = new URL(request.url ?? "/", `${protocol ?? "https"}://${hostHeader}`);
+  url.protocol = "https:";
+  url.hostname = canonicalHostname;
+  url.port = "";
+
+  response.statusCode = 301;
+  response.setHeader("location", url.toString());
+  response.setHeader("cache-control", "public, max-age=3600");
+  response.end();
+  return true;
 }
 
 async function serveStatic(request, response, pathname) {
@@ -133,6 +157,10 @@ function writeWebResponse(webResponse, nodeResponse) {
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
+
+    if (redirectCanonicalHost(request, response)) {
+      return;
+    }
 
     if (await serveStatic(request, response, url.pathname)) {
       return;
